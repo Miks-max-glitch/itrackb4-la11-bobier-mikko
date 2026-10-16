@@ -1,14 +1,11 @@
-Q1. Your form sends data with POST rather than GET. Explain what would go wrong if it used GET instead. Your answer should say something about what a browser does when a page is refreshed.
-
+F1 Which column did you make nullable, and why that one and not another?
 Answer:
-If the form used GET, all my book data (title, author, genre, everything) would get stuffed into the URL itself, like /books?title=TheLordofTheRings&author=Tolkien, instead of being sent quietly in the background. The real issue shows up when you hit refresh browsers treat GET as just "asking" for something, so it'll happily repeat that request over and over with zero warning, which means every refresh could silently add another book. POST is different because the browser knows it's an actual instruction, not a question, so it either warns you before resubmitting or, since I redirect after saving, there's nothing left to resubmit at all. Basically GET is fine for looking at stuff, but the moment you're actually changing data, you need POST or refreshing becomes a landmine.
+I made `genre` nullable. Every book needs a title, author and year, so those can't be empty. But some books don't really fit Classical, Mystery or Historical, so genre is the one that's okay to leave blank.
 
-Q2. When validation fails, your controller does not run the code that saves the record — and you did not write an if statement to stop it. Explain what actually stops it, and where the visitor ends up.
-
+F2 Which step failed first for you, and what did the error say?
 Answer:
-When validate() hits a rule that fails, it doesn't return something I have to check — it stops the method right there by throwing an exception internally. Laravel catches that on its own and redirects the visitor back to the form, bringing the error messages and whatever they typed with it. So I never needed an if statement because the code after validate() just never runs at all when something's invalid. The visitor ends up right back on the same form, now showing what went wrong next to each field.
+The first thing that failed was my seeder, because I ran it before adding `$fillable` to my `Book` model. The error said I needed to add `title` to the fillable property. Laravel didn't know which columns it was allowed to fill. Once I added `$fillable`, it worked.
 
-Q3. Your success message is displayed from the layout, which renders on every page. Explain why it does not appear on every page.
-
+F3 You changed no Blade file in Part D, yet your pages still work. Why not?
 Answer:
-The layout checks for the success message on every page, but the message itself doesn't stick around — it's a flash value, so Laravel only keeps it alive for one request after I redirect. Right after saving, that request is the redirect to the list page, so it shows up there. But the moment I refresh or go to another page, Laravel's already deleted it from the session, so the check in the layout just finds nothing and shows nothing. The layout's always checking, it's just that the message itself disappears fast.
+My Blade files only read things like `$book['title']`, and a book from the database can be read the same way. They can't tell if the data came from the JSON file or the database. I also kept the same variable names in the controller, so nothing in the views needed to change.

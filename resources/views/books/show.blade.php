@@ -7,8 +7,11 @@
     <h2 class="mb-3">Book Details</h2>
 
     <div class="card mb-3" style="max-width: 420px;">
-        <div class="card-header bg-primary text-white">
-            Title: {{ $book['title'] }}
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <span>Title: {{ $book['title'] }}</span>
+            @if (!empty($book['is_featured']))
+                <span class="badge bg-warning text-dark">Featured</span>
+            @endif
         </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Genre: {{ $book['genre'] }}</li>

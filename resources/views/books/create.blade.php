@@ -36,13 +36,15 @@
 
                 <div class="mb-3">
                     <label class="form-label">Genre</label>
-                    <select name="genre" class="form-select">
+                    <select name="genre_id" class="form-select">
                         <option value="">Choose a genre</option>
-                        <option value="Classical" {{ old('genre') === 'Classical' ? 'selected' : '' }}>Classical</option>
-                        <option value="Mystery" {{ old('genre') === 'Mystery' ? 'selected' : '' }}>Mystery</option>
-                        <option value="Historical" {{ old('genre') === 'Historical' ? 'selected' : '' }}>Historical</option>
+                        @foreach ($genres as $genre)
+                            <option value="{{ $genre->id }}"
+                                @selected(old('genre_id') == $genre->id)
+                            >{{ $genre->name }}</option>
+                        @endforeach
                     </select>
-                    @error('genre')
+                    @error('genre_id')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>

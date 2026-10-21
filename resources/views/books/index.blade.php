@@ -11,7 +11,7 @@
     <div class="alert alert-light border d-flex justify-content-between align-items-center mb-3">
         <div>
             <span class="text-muted">Active filters:</span>
-            <span class="badge bg-primary">Genre: {{ $genre }}</span>
+            <span class="badge bg-primary">Genre: {{ $genreId }}</span>
             <span class="badge bg-primary">Year: {{ $year }}</span>
         </div>
         <a href="{{ route('books.index') }}" class="btn btn-sm btn-outline-secondary">Clear all</a>
@@ -20,29 +20,27 @@
     <div class="mb-3">
         <strong class="me-2">Genre:</strong>
         <div class="btn-group btn-group-sm" role="group">
-            <a href="{{ route('books.index', ['genre' => 'all', 'year' => $year]) }}"
-               class="btn {{ $genre === 'all' ? 'btn-primary' : 'btn-outline-primary' }}">All</a>
-            <a href="{{ route('books.index', ['genre' => 'Classical', 'year' => $year]) }}"
-               class="btn {{ $genre === 'Classical' ? 'btn-primary' : 'btn-outline-primary' }}">Classical</a>
-            <a href="{{ route('books.index', ['genre' => 'Mystery', 'year' => $year]) }}"
-               class="btn {{ $genre === 'Mystery' ? 'btn-primary' : 'btn-outline-primary' }}">Mystery</a>
-            <a href="{{ route('books.index', ['genre' => 'Historical', 'year' => $year]) }}"
-               class="btn {{ $genre === 'Historical' ? 'btn-primary' : 'btn-outline-primary' }}">Historical</a>
+            <a href="{{ route('books.index', ['genre_id' => 'all', 'year' => $year]) }}"
+            class="btn {{ $genreId === 'all' ? 'btn-primary' : 'btn-outline-primary' }}">All</a>
+            @foreach ($genres as $g)
+                <a href="{{ route('books.index', ['genre_id' => $g->id, 'year' => $year]) }}"
+                class="btn {{ (string) $genreId === (string) $g->id ? 'btn-primary' : 'btn-outline-primary' }}">{{ $g->name }}</a>
+            @endforeach
         </div>
     </div>
 
     <div class="mb-4">
         <strong class="me-2">Year:</strong>
         <div class="btn-group btn-group-sm" role="group">
-            <a href="{{ route('books.index', ['genre' => $genre, 'year' => 'all']) }}"
+            <a href="{{ route('books.index', ['genre_id' => $genreId, 'year' => 'all']) }}"
                class="btn {{ $year === 'all' ? 'btn-primary' : 'btn-outline-primary' }}">All</a>
-            <a href="{{ route('books.index', ['genre' => $genre, 'year' => '1950']) }}"
+            <a href="{{ route('books.index', ['genre_id' => $genreId, 'year' => '1950']) }}"
                class="btn {{ $year === '1950' ? 'btn-primary' : 'btn-outline-primary' }}">1950</a>
-            <a href="{{ route('books.index', ['genre' => $genre, 'year' => '1954']) }}"
+            <a href="{{ route('books.index', ['genre_id' => $genreId, 'year' => '1954']) }}"
                class="btn {{ $year === '1954' ? 'btn-primary' : 'btn-outline-primary' }}">1954</a>
-            <a href="{{ route('books.index', ['genre' => $genre, 'year' => '1978']) }}"
+            <a href="{{ route('books.index', ['genre_id' => $genreId, 'year' => '1978']) }}"
                class="btn {{ $year === '1978' ? 'btn-primary' : 'btn-outline-primary' }}">1978</a>
-            <a href="{{ route('books.index', ['genre' => $genre, 'year' => '2000']) }}"
+            <a href="{{ route('books.index', ['genre_id' => $genreId, 'year' => '2000']) }}"
                class="btn {{ $year === '2000' ? 'btn-primary' : 'btn-outline-primary' }}">2000</a>
         </div>
     </div>
@@ -81,8 +79,8 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('books.index', ['genre' => $book['genre'], 'year' => $year]) }}">
-                            {{ $book['genre'] }}
+                        <a href="{{ route('books.index', ['genre_id' => $book['genre_id'], 'year' => $year]) }}">
+                            {{ $book->genre->name }}
                         </a>
                     </td>
                 </tr>
@@ -93,5 +91,6 @@
             @endforelse
         </tbody>
     </table>
+    <p>Queries: {{ count(\Illuminate\Support\Facades\DB::getQueryLog()) }}</p>
 
 @endsection

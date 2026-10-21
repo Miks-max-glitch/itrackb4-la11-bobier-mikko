@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Book extends Model
 {
-    //protected $fillable = ['title', 'author', 'year', 'genre', 'is_featured'];
+    protected $fillable = ['title', 'author', 'year', 'genre_id', 'is_featured'];
 
     protected function casts(): array
     {
@@ -14,5 +15,10 @@ class Book extends Model
             'is_featured' => 'boolean',
             'year'        => 'integer',
         ];
+    }
+
+    public function genre(): BelongsTo
+    {
+        return $this->belongsTo(Genre::class);
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;            // D1: model imported at the top
+use App\Models\Genre;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -11,14 +13,17 @@ class BookController extends Controller
 
     public function index(Request $request)
     {
-        $genre = $request->query('genre', 'all');
+        $genres = Genre::all();      // moved up so it is NOT counted
+        DB::enableQueryLog();
+
+        $genreId = $request->query('genre_id', 'all');
         $year = $request->query('year', 'all');
 
-        // D2: read rows from the table instead of the JSON array
-        $query = Book::query();
 
-        if ($genre !== 'all') {
-            $query->where('genre', $genre);
+        $query = Book::with('genre');
+
+        if ($genreId !== 'all') {
+            $query->where('genre_id', $genreId);
         }
 
         if ($year !== 'all') {
@@ -29,7 +34,8 @@ class BookController extends Controller
 
         return view('books.index', [
             'books' => $books,
-            'genre' => $genre,
+            'genres' => $genres,
+            'genreId' => $genreId,
             'year' => $year,
         ]);
 
@@ -37,7 +43,8 @@ class BookController extends Controller
 
     public function create()
     {
-        return view('books.create');
+        $genres = Genre::all();
+        return view('books.create', compact('genres'));
     }
 
     public function store(Request $request)
@@ -46,14 +53,13 @@ class BookController extends Controller
             'title'       => 'required|max:100',
             'author'      => 'required|max:100',
             'year'        => 'required|digits:4|integer|min:1000|max:' . date('Y'),
-            'genre'       => 'required|in:Classical,Mystery,Historical',
+            'genre_id'    => 'required|exists:genres,id',
             'is_featured' => 'sometimes|boolean',
         ]);
 
-        // an unchecked checkbox sends nothing, so this fills in a real false
         $validated['is_featured'] = $request->boolean('is_featured');
 
-        Book::create($validated);   // saves to the database, no JSON writing
+        Book::create($validated);
 
         return redirect()
             ->route('books.index')

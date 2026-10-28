@@ -11,8 +11,7 @@ Route::get('/books/filter/{genre?}', function (?string $genre = null){
     return redirect()->route('books.index', $genre ? ['genre' => $genre] : []);
 })->name('books.filter');
 
-Route::resource('books', BookController::class)
-    ->only(['index', 'show', 'create', 'store']);
+Route::resource('books', BookController::class);
 
 Route::get('/teachers/featured', [TeacherController::class, 'featured'])
      ->name('teachers.featured');

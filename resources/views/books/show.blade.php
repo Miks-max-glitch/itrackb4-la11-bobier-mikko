@@ -14,7 +14,7 @@
             @endif
         </div>
         <ul class="list-group list-group-flush">
-            <li class="list-group-item">Genre: {{ $book['genre'] }}</li>
+            <li class="list-group-item">Genre: {{ $book->genre->name }}</li>
             <li class="list-group-item">Author: {{ $book['author'] }}</li>
             <li class="list-group-item">Year: {{ $book['year'] }}</li>
         </ul>

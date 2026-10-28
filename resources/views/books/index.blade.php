@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <table class="table table-striped">
+        <table class="table table-striped">
         <thead>
             <tr>
                 <th>ID</th>
@@ -53,6 +53,7 @@
                 <th>Author</th>
                 <th>Year</th>
                 <th>Genre</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -83,10 +84,19 @@
                             {{ $book->genre->name }}
                         </a>
                     </td>
+                    <td>
+                        <a href="{{ route('books.edit', $book) }}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{{ route('books.destroy', $book) }}" method="POST" class="d-inline"
+                            onsubmit="return confirm('Delete this book?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5">No Books Available</td>
+                    <td colspan="6">No Books Available</td>
                 </tr>
             @endforelse
         </tbody>
